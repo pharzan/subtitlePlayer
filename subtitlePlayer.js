@@ -10,6 +10,11 @@ var subtitlePlayer = function () {
         playbackTime: m.prop(0)
     };
 
+    this.subtitleToArray = function () {
+        var self = this;
+        console.log(self.vm.content.split(/\d{2}:\d{2}:\d{2},\d{3}/))
+    };
+
     this.emulator = function () {
 
         setInterval(
@@ -17,7 +22,7 @@ var subtitlePlayer = function () {
 
                 var self = this;
                 m.startComputation();
-                self.vm.playbackTime(self.vm.playbackTime()+0.250);
+                self.vm.playbackTime(self.vm.playbackTime() + 0.250);
                 m.endComputation();
 
             }.bind(this),
@@ -26,16 +31,28 @@ var subtitlePlayer = function () {
 
     };
 
-
     this.view = function () {
         var self = this;
 
         return [m('div',
             {
-                config: self.emulator()
+                config: function () {
+                    self.emulator()
+                    //self.subtitleToArray()
+                }
             },
             self.vm.subtitle()),
-            m('div', 'Current playbackTime: ' + self.vm.playbackTime())
+            m('div', 'Current playbackTime: ' + self.vm.playbackTime()),
+            m('video', {controls: "controls",crossorigin:"anonymous"},
+                m('source', {
+                    src: 'file://C:/wamp/www/subtitlePlayer/assets/video/A brief history of melancholy.mp4'
+                }),
+                m('track', {
+                    kind:'captions',
+                    src: 'file://C:/wamp/www/subtitlePlayer/assets/video/A brief history of melancholy.srt',
+                    srclang:'eng'
+                })
+            )
         ]
     }
 };
